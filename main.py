@@ -11,7 +11,8 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static", html=True), name="static")
 
 model = torchvision.models.resnet18(pretrained=True)
-    
+model.eval()
+
 # Image transforms
 normalize = torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                              std=[0.229, 0.224, 0.225])
