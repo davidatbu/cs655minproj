@@ -1,4 +1,5 @@
 from fastapi import FastAPI, File, UploadFile
+from fastapi.staticfiles import StaticFiles
 from PIL import Image
 import torch
 import torchvision
@@ -6,6 +7,7 @@ import json
 import io
 
 app = FastAPI()
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
 model = torchvision.models.resnet18(pretrained=True)
     
