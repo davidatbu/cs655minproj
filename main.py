@@ -1,5 +1,6 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
 from PIL import Image
 import torch
 import torchvision
@@ -7,7 +8,7 @@ import json
 import io
 
 app = FastAPI()
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+app.mount("/static", StaticFiles(directory="static", html=True), name="static")
 
 model = torchvision.models.resnet18(pretrained=True)
     
@@ -24,8 +25,12 @@ transform = torchvision.transforms.Compose([
 with open('label_map.json', 'r') as f:
     label_map = json.load(f)
 
+@app.get("/")
+async def main_page():
+    return RedirectResponse("/static/index.html")
+
 @app.post("/")
-async def root(file: UploadFile=File(...)):
+async def predict(file: UploadFile=File(...)):
     contents = await file.read()
     img = transform(Image.open(io.BytesIO(contents)).convert('RGB')).unsqueeze(0)
     cl_idx = model(img).argmax(dim=1).squeeze()
