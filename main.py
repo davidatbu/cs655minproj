@@ -1,11 +1,12 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, HTMLResponse
 from PIL import Image
 import torch
 import torchvision
 import json
 import io
+import responseMaker
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static", html=True), name="static")
@@ -30,10 +31,10 @@ with open('label_map.json', 'r') as f:
 async def main_page():
     return RedirectResponse("/static/index.html")
 
-@app.post("/")
+@app.post("/", response_class=HTMLResponse)
 async def predict(file: UploadFile=File(...)):
     contents = await file.read()
     img = transform(Image.open(io.BytesIO(contents)).convert('RGB')).unsqueeze(0)
     cl_idx = model(img).argmax(dim=1).squeeze()
     cl_label = label_map[str(cl_idx.item())][1]
-    return cl_label
+    return responseMaker.respond(cl_label)

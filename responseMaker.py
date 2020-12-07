@@ -1,14 +1,16 @@
+def respond(classification):
+    return """
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Classification Input</title>
+    <title>Result</title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <style>
       html, body {
       min-height: 100%;
       }
-      body, div, form, input, select, p { 
+      body, div, #ufPlaceholder, input, select, p { 
       padding: 0;
       margin: 0;
       outline: none;
@@ -36,7 +38,7 @@
       padding: 25px;
       background: rgba(0, 0, 0, 0.5); 
       }
-      .left-part, form {
+      .left-part, #ufPlaceholder {
       padding: 25px;
       }
       .left-part {
@@ -45,7 +47,7 @@
       .fa-graduation-cap {
       font-size: 72px;
       }
-      form {
+      #ufPlaceholder {
       background: rgba(0, 0, 0, 0.7); 
       }
       .title {
@@ -116,35 +118,30 @@
       flex-direction: row;
       height: calc(100% - 50px);
       }
-      .left-part, form {
+      .left-part, #ufPlaceholder {
       flex: 1;
       height: auto;
       }
+      }
+        #classification {
+        font-size: 75px;
       }
     </style>
   </head>
   <body>
     <div class="main-block">
-      <form id="UploadForm" action="http://localhost:8000" method="post" enctype="multipart/form-data">
-        <div class="title"> 
-          <h2>Upload image file</h2>
-        </div>
-        <div id="File1Holder">
-            <input type="file" id="File1" name="file" accept="image/*">
-        </div>
-        <button type="submit">Submit</button>
-    </form>
+      <div id="ufPlaceholder">
+          <div class="title"> 
+            <h2>Classification:</h2>
+          </div>
+          <div id="File1Holder">
+              <div id="classification">""" + classification + """</div>
+          </div>
+          <form action="http://localhost:8000/">
+            <button type="submit">Back</button>
+          </form>
+      </div>
     </div>
   </body>
 </html>
-
-<!-- <html>
-    <head></head>
-    <body>
-        <form id="UploadForm" action="http://localhost:8000" method="post" enctype="multipart/form-data">
-            <input type="file" id="File1" name="file" accept="image/*">
-            <br/><br/>
-            <input type="submit" value="Submit">
-        </form>
-    </body>
-</html>  -->
+    """
