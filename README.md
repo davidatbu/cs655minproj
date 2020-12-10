@@ -10,16 +10,59 @@ $ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-# Testing
-While the server is running, one can run `curl` to test it like the following:
+Then use a web browser to access:
+
+```
+http://localhost:8000/
+```
+
+And follow the prompts to upload a file and submit to get a classification.
+
+
+
+You can also use the command line. While the server is running, use `curl` like the following:
 
 ```bash
-$ curl --form file=@/home/davidat/Pictures/my_img.jpeg localhost:8000
+$ curl -X POST --form file=@/home/davidat/Pictures/my_img.jpeg localhost:8000
 ```
 
-The server will show some lines like the following
+# Testing
 
+There are two test scripts.
+
+The first script will create N parallel workers. Each worker will submit a post request, sending an image and waiting for the response. It will start a timer and, in the end, return the time taken to fulfill the request. The script takes one parameter "N", which is the number of parallel requests. Run it like so:
+
+```bash
+$ python test_script.py N
 ```
-Received a file of with name: my_img.jpeg and size: 1173220
-INFO:     127.0.0.1:50744 - "POST / HTTP/1.1" 200 OK
+
+For example:
+
+```bash
+$ python test_script.py 10
 ```
+
+This will spawn 10 parallel requests.
+
+
+In the second test script, requests don’t wait for each other and achieve true parallelism and scheduling. The code creates an empty processes list and assigns a new one each T second and clears finished processes. There is no explicit limit to the number of processes that can be created. We might test for higher levels of parallel requests with lower number of Ts. This makes sure that the client side would not bottleneck the testing and the server side could be pushed to its limits. Run the test script like so:
+
+```bash
+$ python run_multiple_tests.py N T R verbose 
+```
+
+N is the number of (parallel) requests to be run in parallel.
+
+T is the amount of time in seconds to wait after spawning the N requests. T has to be an integer.
+
+For R, this process will be repeated R times. It's optional.
+
+verbose is optional.
+
+So as an example:
+
+```bash
+$ python run_multiple_tests.py 10 1 5 verbose 
+```
+
+Here, the script will spawn 10 requests in parallel, wait for 1 second, spawn 10 more requests, wait for 1 second, spawn 10 more requests ... 5 times.
