@@ -17,7 +17,7 @@ the time required to process one request and append this value to a shared
 list parameter 
 """
 def classify(session, indx):
-    url = " http://192.171.20.116:8000"             # Here we declare the destination IP and port
+    url = " http://localhost:8000"             # Here we declare the destination IP and port
     files = {'file': open('./dog.jpg', 'rb')}
     start_time_var = default_timer()                # We start the timer 
     with session.post(url,files=files) as response: # Here use the given session and send a post request
