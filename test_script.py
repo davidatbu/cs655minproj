@@ -14,7 +14,7 @@ def classify(session, indx):
     url = " http://192.171.20.116:8000"
     files = {'file': open('./dog.jpg', 'rb')}
     start_time_var = default_timer()
-    with session.post(url,files=files) as response:ß
+    with session.post(url,files=files) as response:
         data = response.text
         if response.status_code != 200:
             print("FAILURE::{0}".format(data))
