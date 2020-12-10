@@ -13,18 +13,19 @@ uvicorn main:app --reload
 Then use a web browser to access:
 
 ```
-http://localhost:8000/
+http://IP:8000/
 ```
 
 And follow the prompts to upload a file and submit to get a classification.
 
 
-
 You can also use the command line. While the server is running, use `curl` like the following:
 
 ```bash
-$ curl -X POST --form file=@/home/davidat/Pictures/my_img.jpeg localhost:8000
+$ curl -X POST --form file=@/path/to/image.extension IP:8000
 ```
+Above, `IP` refers to the public IP of the server, which can be replaced with `localhost`, if the client is being run on the same machine as the server. 
+
 
 # Testing
 
