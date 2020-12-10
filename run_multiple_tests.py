@@ -4,27 +4,23 @@ from random import randint
 import numpy as np
 import subprocess
 import sys 
-args = sys.argv
-try:
-    n = int(args[1])
-except:
-    print('Number of parallel runs not given. Setting to default:10')
-    n = 10
-try:
-    sleep_timer = int(args[2])
-except:
-    print('Time betweeen triggers not given. Setting to default:1')
-    sleep_timer = 1
-try:
-    num_of_tries = int(args[3])
-except:
-    print('Number test runs not given. Setting to default:10')
-    num_of_tries = 10
-try:
-    verbose = int(args[4])
-except:
-    print('Number test runs not given. Setting to default:10')
-    num_of_tries = False
+from argparse import ArgumentParser
+
+def parse_args():
+    parser = ArgumentParser()
+
+    parser.add_argument("--num_reqs", "-N", type=int, default = 10, help="Number of parallel requests in one run.")
+    parser.add_argument("--time_between_runs", "-T", type=int, default=1, help="Seconds to wait between runs."
+            " Note that the waiting starts right after the requests are fired (ie, the "
+            " time the requests in the previous run take to be fulfilled does not affect "
+            " the time between runs.")
+    parser.add_argument("--runs", "-R", type=int, default=10, help="Total number of runs.")
+    parser.add_argument("--verbose", "-V", action="store_true")
+            
+    args = parser.parse_args()
+
+    return args.num_reqs, args.time_between_runs, args.runs, args.verbose
+
 
 def function(N,i,returns_dict):
     bashCommand = "python3 test_script.py {}".format(N)
@@ -34,7 +30,7 @@ def function(N,i,returns_dict):
 
 
 process_data_list = []
-def main(N):
+def main(N, sleep_timer, num_of_tries, verbose):
     run_next=True
     manager = mp.Manager()
     returns_dict = manager.dict()
@@ -86,7 +82,8 @@ def main(N):
     return returns_dict
 
 # =======================================================================================
-returns_dict = main(n)
+n, sleep_timer, num_of_tries, verbose = parse_args()
+returns_dict = main(n, sleep_timer, num_of_tries, verbose)
 total_delays = []
 for i,value in returns_dict.items():
     try:
