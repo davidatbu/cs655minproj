@@ -65,7 +65,7 @@ All arguments are optional.
 So as an example:
 
 ```bash
-$ python run_multiple_tests.py 10 1 5 verbose 
+$ python run_multiple_tests.py -N 10 -T 1 -R 5
 ```
 
 Here, the script will spawn 10 requests in parallel, wait for 1 second, spawn 10 more requests, wait for 1 second, spawn 10 more requests ... 5 times.
