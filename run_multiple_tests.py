@@ -5,7 +5,9 @@ import numpy as np
 import subprocess
 import sys 
 from argparse import ArgumentParser
-
+"""
+argparser
+"""
 def parse_args():
     parser = ArgumentParser()
 
@@ -20,7 +22,11 @@ def parse_args():
     args = parser.parse_args()
 
     return args.num_reqs, args.time_between_runs, args.runs, args.verbose
-
+"""
+This function calls test_script.py with the number of parallel request that
+was passed to the function. We will later use this function as a trigger
+to send parallel requests every N seconds 
+"""
 
 def function(N,i,returns_dict):
     bashCommand = "python3 test_script.py {}".format(N)
@@ -28,9 +34,24 @@ def function(N,i,returns_dict):
     output, error = process.communicate()
     returns_dict[i] = output
 
+"""
+Here we create a global list to store processes created and check if they are
+finished or not and remove them from the list if they are.
+This function essentially works in two parts
+Part I 
+It spawns a new multiprocessing process and calls function every n seconds
+and it keeps checking if any processes are finished. If so it removes them
+from the queue and keeps checking. If it had just spawned a new process it will
+go into the wait loop where it will wait for T seconds to run another process
+PART II
+Finally when the total number of runs reach R it exits the while and just looks
+at for processes that are finished. When they are all finished it exits and 
+prints n and the average delay. 
+"""
 
 process_data_list = []
 def main(N, sleep_timer, num_of_tries, verbose):
+
     run_next=True
     manager = mp.Manager()
     returns_dict = manager.dict()
